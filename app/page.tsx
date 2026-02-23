@@ -1,29 +1,39 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-async function getTherapists() {
-  const res = await fetch("https://ei-backend-04up.onrender.com/therapists", {
-    cache: "no-store",
-  });
-  return res.json();
-}
+type Therapist = {
+  id: string | number;
+  name: string;
+  specialization: string;
+  experienceYears: number;
+};
+
+type FAQ = {
+  id: string | number;
+  q: string;
+  a: string;
+};
 
 export default function Home() {
+  const router = useRouter();
+
   const [apiStatus, setApiStatus] = useState("Checking...");
-  const [therapists, setTherapists] = useState<any[]>([]);
-  const [faqs, setFaqs] = useState<any[]>([]);
+  const [therapists, setTherapists] = useState<Therapist[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
 
   useEffect(() => {
-    const url = "https://ei-backend-04up.onrender.com/";
-    fetch(url)
+    fetch("https://ei-backend-04up.onrender.com/")
       .then((res) => res.text())
       .then((text) => setApiStatus(text))
       .catch(() => setApiStatus("Cannot reach backend"));
   }, []);
 
   useEffect(() => {
-    getTherapists()
+    fetch("https://ei-backend-04up.onrender.com/therapists")
+      .then((res) => res.json())
       .then((data) => setTherapists(data))
       .catch(() => setTherapists([]));
   }, []);
@@ -65,72 +75,79 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <a href="#" style={{ color: "white", textDecoration: "none" }}>
-            About
-          </a>
-          <a href="#" style={{ color: "white", textDecoration: "none" }}>
+          <Link href="/" style={{ color: "white", textDecoration: "none" }}>
+            Home
+          </Link>
+          <Link href="/faq" style={{ color: "white", textDecoration: "none" }}>
             FAQ
-          </a>
-          <a href="#" style={{ color: "white", textDecoration: "none" }}>
+          </Link>
+          <Link
+            href="/therapists"
+            style={{ color: "white", textDecoration: "none" }}
+          >
             Therapists
-          </a>
-          <button
-            style={{
-              background: "transparent",
-              border: "1px solid #fff",
-              borderRadius: 20,
-              padding: "6px 14px",
-              color: "white",
-              fontSize: 14,
-              cursor: "pointer",
-            }}
+          </Link>
+          <Link
+            href="/contact"
+            style={{ color: "white", textDecoration: "none" }}
           >
-            Login
-          </button>
-          <button
-            style={{
-              background: "#f3b343",
-              borderRadius: 20,
-              padding: "6px 16px",
-              border: "none",
-              color: "#1f3b32",
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: "pointer",
-            }}
-          >
-            Get started
-          </button>
+            Contact
+          </Link>
+          <Link href="/login">
+            <button
+              style={{
+                background: "transparent",
+                border: "1px solid #fff",
+                borderRadius: 20,
+                padding: "6px 14px",
+                color: "white",
+                fontSize: 14,
+                cursor: "pointer",
+              }}
+            >
+              Login
+            </button>
+          </Link>
+          <Link href="/signup">
+            <button
+              style={{
+                background: "#f3b343",
+                borderRadius: 20,
+                padding: "6px 16px",
+                border: "none",
+                color: "#1f3b32",
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: "pointer",
+              }}
+            >
+              Get started
+            </button>
+          </Link>
         </nav>
       </header>
 
-      {/* Hero + cards */}
+      {/* Hero + three cards */}
       <section
         style={{
-          maxWidth: 1100,
+          padding: "80px 24px",
+          maxWidth: 1050,
           margin: "0 auto",
-          padding: "32px 24px 48px",
+          textAlign: "center",
         }}
       >
-        <div style={{ maxWidth: 540, marginBottom: 32 }}>
-          <h1
-            style={{
-              fontSize: 40,
-              lineHeight: 1.1,
-              marginBottom: 16,
-              fontWeight: 700,
-            }}
-          >
-            You deserve to feel better.
-          </h1>
-          <p style={{ fontSize: 18, marginBottom: 8 }}>
-            Online emotional and mental health support from licensed
-            professionals, right from home.
-          </p>
-          <p style={{ fontSize: 16, opacity: 0.9 }}>
-            What type of support are you looking for?
-          </p>
-        </div>
+        <h1 style={{ fontSize: 40, marginBottom: 12 }}>
+          You deserve to feel better.
+        </h1>
+        <p
+          style={{
+            fontSize: 18,
+            color: "rgba(249,250,251,0.9)",
+            marginBottom: 48,
+          }}
+        >
+          What type of support are you looking for today?
+        </p>
 
         <div
           style={{
@@ -139,86 +156,69 @@ export default function Home() {
             gap: 24,
           }}
         >
-          <CategoryCard
-            title="Individual"
-            subtitle="For myself"
-            color="#2c6d4f"
-          />
-          <CategoryCard
-            title="Couples"
-            subtitle="For me and my partner"
-            color="#315f73"
-          />
-          <CategoryCard title="Teen" subtitle="For my child" color="#a65a24" />
+          {/* Individual */}
+          <button
+            onClick={() => router.push("/login")}
+            style={{
+              border: "none",
+              borderRadius: 24,
+              padding: 32,
+              textAlign: "left",
+              cursor: "pointer",
+              background: "#E6E1F5", // soft lavender
+              color: "#111827",
+              boxShadow: "0 10px 30px rgba(15, 23, 42, 0.35)",
+            }}
+          >
+            <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
+              Individual
+            </div>
+            <div style={{ fontSize: 14, color: "#4B5563" }}>For myself</div>
+          </button>
+
+          {/* Couples */}
+          <button
+            onClick={() => router.push("/login")}
+            style={{
+              border: "none",
+              borderRadius: 24,
+              padding: 32,
+              textAlign: "left",
+              cursor: "pointer",
+              background: "#D6D3D1", // warm grey
+              color: "#111827",
+              boxShadow: "0 10px 30px rgba(15, 23, 42, 0.35)",
+            }}
+          >
+            <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
+              Couples
+            </div>
+            <div style={{ fontSize: 14, color: "#4B5563" }}>
+              For me and my partner
+            </div>
+          </button>
+
+          {/* Teen */}
+          <button
+            onClick={() => router.push("/login")}
+            style={{
+              border: "none",
+              borderRadius: 24,
+              padding: 32,
+              textAlign: "left",
+              cursor: "pointer",
+              background: "#E9D5FF", // lavender variant
+              color: "#111827",
+              boxShadow: "0 10px 30px rgba(15, 23, 42, 0.35)",
+            }}
+          >
+            <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
+              Teen
+            </div>
+            <div style={{ fontSize: 14, color: "#4B5563" }}>For my child</div>
+          </button>
         </div>
-
-        {/* Backend + dynamic data */}
-        <section style={{ marginTop: 40 }}>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>Backend status</h2>
-          <p>{apiStatus}</p>
-
-          <h2 style={{ fontSize: 20, margin: "24px 0 8px" }}>
-            Available therapists
-          </h2>
-          {therapists.length === 0 ? (
-            <p>Loading therapists...</p>
-          ) : (
-            <ul>
-              {therapists.map((t) => (
-                <li key={t.id}>
-                  <strong>{t.name}</strong> – {t.specialization} (
-                  {t.experienceYears} yrs)
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <h2 style={{ fontSize: 20, margin: "24px 0 8px" }}>
-            Common questions
-          </h2>
-          {faqs.length === 0 ? (
-            <p>Loading FAQs...</p>
-          ) : (
-            <ul>
-              {faqs.map((f) => (
-                <li key={f.id}>
-                  <strong>{f.q}</strong> – {f.a}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
       </section>
     </main>
-  );
-}
-
-function CategoryCard({
-  title,
-  subtitle,
-  color,
-}: {
-  title: string;
-  subtitle: string;
-  color: string;
-}) {
-  return (
-    <div
-      style={{
-        background: color,
-        borderRadius: 16,
-        padding: 24,
-        minHeight: 190,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
-      <div>
-        <h3 style={{ fontSize: 22, marginBottom: 8 }}>{title}</h3>
-        <p style={{ fontSize: 14, opacity: 0.9 }}>{subtitle}</p>
-      </div>
-      <span style={{ fontSize: 24 }}>➜</span>
-    </div>
   );
 }
